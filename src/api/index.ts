@@ -7,6 +7,8 @@ import {
 
 const apiURL =
   "https://magiclab-twitter-interview.herokuapp.com/jeremy-christian/";
+const itemLimit = 10000;
+const requestDelay = 2000;
 
 const getDummyTweet = (id: number) => ({
   image: "missing",
@@ -49,7 +51,6 @@ export const loadMissingTweets = (
       });
       // if you've hit the api count limit, loop again
       if (missingTweets.length > 50) {
-        console.log("looping");
         loadMissingTweets(
           [foundTweets[foundTweets.length - 1]].concat(missingTweets.slice(50)),
           setItems
@@ -111,7 +112,7 @@ export const loadInitialTweets = (
 
 export const loadNewTweets = (setItems: Function) => {
   // if no id provided, return latests tweets
-  const fetchRequest = `${apiURL}api?count=50`;
+  const fetchRequest = `${apiURL}api?count=1`;
 
   return fetch(fetchRequest)
     .then((response) => response.json())
@@ -145,18 +146,21 @@ export const loadNewTweets = (setItems: Function) => {
                 [newerTweets[newerTweets.length - 1]].concat(missingTweets),
                 setItems
               ),
-            1000
+            requestDelay
           );
 
         // remove duplicate tweets from incoming payload
         const cleanNewerTweets = loDifferenceBy(newerTweets, olderTweets, "id");
-        return cleanNewerTweets.concat(missingTweets).concat(olderTweets);
+        let result = cleanNewerTweets.concat(missingTweets).concat(olderTweets);
+        // cap the item array's size limit to 10000
+        if (result.length > itemLimit) result = result.slice(0, itemLimit);
+        return result;
       });
       // pause for 2 seconds, then loop using the latest id you retrieved
-      setTimeout(() => loadNewTweets(setItems), 2000);
+      setTimeout(() => loadNewTweets(setItems), requestDelay);
     })
     .catch(function (error) {
       // if we fail, try again with the same id
-      setTimeout(() => loadNewTweets(setItems), 2000);
+      setTimeout(() => loadNewTweets(setItems), requestDelay);
     });
 };

@@ -8,16 +8,20 @@ So the two hurdles I immediately wanted to overcome was the table virtualization
 
 Querying the api to retrieve a list of tweets was straightforward, but a common issue to avoid is trying to render them all once you have them.
 
-`react-window` is a neat little virtualization library that got me around the first problem.
-
 In a nutshell what you want to achieve is to systematically load / unload dom elements as they scroll in / out of view.
 
-The library works super well on that front, but its companion library that I used to solve the loading problem is less ideal.
+I used a tandem of `react-window` and `react-window-infinite-loader` to overcome this.
 
-Getting `react-window-infinite-loader` to load older tweets as you scroll _down_ was very straightforward, but in an ideal world I'd have liked to be able to have it both ways so that tweets you can't see above you would only load when you scrolled them into view too.
+I've used them extensively in the past and it's the best-in-class option for react table virtualization in my opinion.
 
-Another issue I could see was that just because you could query the api for the latest tweets, that doesn't guarantee that you'll get all of them!
+Other libraries I employed were `styled-components`, which is a great CSS utility, though it sometimes scales poorly on large projects.
 
-The workaround to that was to figure out how many were missing from the payload and provide dummy data while you loaded them, which was easy.
+Ant Design is a nice rich UI library that I just used to plug some components in at the start of the project.
 
-Something else I'd have liked to achieve would be to load the missing tweets in the order that the user needed to see them, so as you scroll upwards towards your potentially missing items you'd have the best chances of loading the ones the user was most likely to see first.
+Data flow wise what we're doing is loading an initial 50 tweets, then the fetch request recurses and continues to add more in 2 second intervals.
+
+If we load some tweets and I can see theres a gap in my sequential ids, then I make some dummy data and fire a recursing fetch to load the missing data 50 tweets at a time.
+
+The infinite-loader calls a request for 50 tweets after the last one in the table to keep new tweets coming in as you scroll without loading tweets you're never going to see if you don't scroll down.
+
+I hope you like the demo, let me know what you think!

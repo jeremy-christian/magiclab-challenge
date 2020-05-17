@@ -20,16 +20,12 @@ export default function InfiniteList({
   items: Tweet[];
   loadNextPage: (startIndex: number, stopIndex: number) => Promise<void>;
 }) {
-  // Add an extra row to hold loading indicators
-  const itemCount = items.length + 1;
-
-  // Only load 1 page of items at a time.
-  // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
+  // if the page is already loading pass an empty callback to avoid repeat calls
   const loadMoreItems = isNextPageLoading
     ? () => new Promise(() => {})
     : loadNextPage;
 
-  // Every row is loaded except for our loading indicator row.
+  // if the index has passed the item count then we need to load more
   const isItemLoaded = (index: number) => {
     return !!items[index];
   };
@@ -54,13 +50,13 @@ export default function InfiniteList({
           return (
             <InfiniteLoader
               isItemLoaded={isItemLoaded}
-              itemCount={itemCount}
+              itemCount={items.length + 1}
               loadMoreItems={loadMoreItems}
             >
               {({ onItemsRendered, ref }) => (
                 <FixedSizeList
                   height={height}
-                  itemCount={itemCount + 10}
+                  itemCount={Math.min(items.length + 10, 10000)}
                   itemSize={200}
                   onItemsRendered={onItemsRendered}
                   ref={ref}
