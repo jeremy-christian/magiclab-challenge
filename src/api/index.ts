@@ -112,7 +112,7 @@ export const loadInitialTweets = (
 
 export const loadNewTweets = (setItems: Function) => {
   // if no id provided, return latests tweets
-  const fetchRequest = `${apiURL}api?count=1`;
+  const fetchRequest = `${apiURL}api?count=50`;
 
   return fetch(fetchRequest)
     .then((response) => response.json())
