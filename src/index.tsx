@@ -20,23 +20,6 @@ const App = () => {
     }
   };
 
-  React.useMemo(() => {
-    items.forEach((item, index) => {
-      if (index === items.length - 1) {
-        return true;
-      }
-      const idsAreSequential = item.id === items[index + 1].id + 1;
-      if (!idsAreSequential) {
-        console.log({
-          items: items.map((i) => i.id),
-          a: item.id,
-          b: items[index + 1].id + 1,
-        });
-        throw Error(`Fetch error: ${"missing / duplicate tweet detected"}`);
-      }
-    });
-  }, [items]);
-
   return (
     <InfiniteList
       isNextPageLoading={isNextPageLoading}
