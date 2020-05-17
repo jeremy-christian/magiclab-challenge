@@ -51,15 +51,24 @@ export const loadMissingTweets = (
       });
       // if you've hit the api count limit, loop again
       if (missingTweets.length > 50) {
-        loadMissingTweets(
-          [foundTweets[foundTweets.length - 1]].concat(missingTweets.slice(50)),
-          setItems
+        setTimeout(
+          () =>
+            loadMissingTweets(
+              [foundTweets[foundTweets.length - 1]].concat(
+                missingTweets.slice(50)
+              ),
+              setItems
+            ),
+          requestDelay
         );
       }
     })
     .catch((error) => {
       // if unsuccessful, try again with the same id
-      loadMissingTweets(missingTweets, setItems);
+      setTimeout(
+        () => loadMissingTweets(missingTweets, setItems),
+        requestDelay
+      );
     });
 };
 
@@ -106,7 +115,10 @@ export const loadInitialTweets = (
     })
     .catch(function (error) {
       // if unsuccessful, try again
-      loadInitialTweets(setItems, setIsNextPageLoading);
+      setTimeout(
+        () => loadInitialTweets(setItems, setIsNextPageLoading),
+        requestDelay
+      );
     });
 };
 

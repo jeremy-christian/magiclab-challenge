@@ -11,7 +11,7 @@ const App = () => {
   // this callback is called when the infinite loader needs more items
   const loadNextPage = () => {
     setIsNextPageLoading(true);
-    // if we already have tweets, load any missing tweets
+    // if we already have tweets, load some older tweets to add to the list
     if (items.length > 0) {
       return loadOldTweets(items, setItems, setIsNextPageLoading);
     } else {
